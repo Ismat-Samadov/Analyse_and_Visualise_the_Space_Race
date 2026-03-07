@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="18" fill="#121213"/>
+  <!-- 2x2 Wordle tile grid -->
+  <!-- Row 1 -->
+  <rect x="8"  y="8"  width="38" height="38" rx="5" fill="#538d4e"/>
+  <rect x="54" y="8"  width="38" height="38" rx="5" fill="#b59f3b"/>
+  <!-- Row 2 -->
+  <rect x="8"  y="54" width="38" height="38" rx="5" fill="#3a3a3c"/>
+  <rect x="54" y="54" width="38" height="38" rx="5" fill="#538d4e"/>
+</svg>

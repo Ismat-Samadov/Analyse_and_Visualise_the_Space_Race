@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wordle
+
+A beautiful, responsive Wordle clone built with Next.js 16, TypeScript, and Tailwind CSS.
+
+![Wordle Screenshot](public/favicon.svg)
+
+## Features
+
+- **Daily word** — A new 5-letter word every day, consistent for all players
+- **6 attempts** — Guess the word before you run out of tries
+- **Color feedback** — Green (correct), Yellow (wrong position), Gray (absent)
+- **Animated tiles** — Flip reveal animation and shake on invalid input
+- **On-screen keyboard** — With color-coded key states; physical keyboard supported
+- **Statistics** — Tracks games played, win %, current streak, max streak, and guess distribution
+- **Dark / Light mode** — Toggle with one click; defaults to dark
+- **Responsive** — Works great on mobile, tablet, and desktop
+- **Persistent state** — Game and stats are saved to `localStorage`
+- **Toast notifications** — Instant feedback for invalid guesses and game results
+- **Accessible** — Keyboard navigation, ARIA labels, semantic HTML
+
+## Tech Stack
+
+| Tool | Purpose |
+|------|---------|
+| [Next.js 16](https://nextjs.org) | React framework (App Router) |
+| [TypeScript](https://typescriptlang.org) | Type safety |
+| [Tailwind CSS v4](https://tailwindcss.com) | Utility-first styling |
+| CSS Keyframes | Flip, shake, bounce, fade animations |
+| `localStorage` | Game state & statistics persistence |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to play.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  app/
+    globals.css        # CSS animations & Tailwind import
+    layout.tsx         # Root layout with metadata & favicon
+    page.tsx           # Main game page
+  components/
+    Board.tsx          # 6x5 grid of tiles
+    Tile.tsx           # Individual tile with flip animation
+    Keyboard.tsx       # On-screen keyboard (3 rows)
+    Key.tsx            # Individual keyboard key
+    Header.tsx         # Title bar with help/stats/theme icons
+    HelpModal.tsx      # How-to-play modal
+    StatsModal.tsx     # Statistics modal with guess distribution
+    Modal.tsx          # Reusable modal wrapper
+    Toast.tsx          # Toast notification container
+  hooks/
+    useWordle.ts       # Core game state machine (useReducer)
+  lib/
+    game.ts            # Guess evaluation algorithm
+    types.ts           # TypeScript interfaces
+    wordList.ts        # Answer words + daily word picker
+    storage.ts         # localStorage read/write helpers
+public/
+  favicon.svg          # Custom Wordle-style favicon
+```
 
-## Learn More
+## How the Daily Word Works
 
-To learn more about Next.js, take a look at the following resources:
+The daily word is derived deterministically from the current date:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+const dayIndex = Math.floor((today - START_DATE) / 86_400_000);
+const word = WORD_LIST[dayIndex % WORD_LIST.length];
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This ensures every player sees the same word on the same day without a server.
 
-## Deploy on Vercel
+## Guess Evaluation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The evaluator handles duplicate letters correctly with a two-pass algorithm:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **First pass** — Mark letters in the exact correct position (green)
+2. **Second pass** — Mark remaining letters that exist in the word but in a different position (yellow)
+3. Anything else is marked absent (gray)
+
+## Build
+
+```bash
+npm run build
+npm start
+```
+
+## Deploy
+
+The easiest way to deploy is [Vercel](https://vercel.com):
+
+```bash
+npx vercel
+```
+
+Or any platform that supports Next.js (Netlify, Railway, Render, Docker, etc.).
+
+## License
+
+MIT
